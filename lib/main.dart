@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_pbm_tm/home.dart';
 import 'package:tugas_pbm_tm/jadwal.dart';
+import 'package:tugas_pbm_tm/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,9 +14,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomeScreen(),
+      home: LoginScreen(),
       routes: {'/jadwal': (context) => Jadwal(),
-      },
+      '/login' : (context) => HomeScreen(),},
+      // {'/login' : (context) => LoginScreen(),
+      // }
     );
   }
 }
