@@ -17,8 +17,6 @@ class MyApp extends StatelessWidget {
       home: LoginScreen(),
       routes: {'/jadwal': (context) => Jadwal(),
       '/login' : (context) => HomeScreen(),},
-      // {'/login' : (context) => LoginScreen(),
-      // }
     );
   }
 }

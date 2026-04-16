@@ -35,7 +35,7 @@ class HomeScreen extends StatelessWidget {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF4FC3F7).withOpacity(0.3),
+                          color: const Color(0xFF4FC3F7).withValues(alpha: 0.7),
                           blurRadius: 20,
                           offset: const Offset(0, 8),
                         ),
