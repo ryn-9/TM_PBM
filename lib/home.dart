@@ -89,6 +89,35 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  // const SizedBox(height: 20),
+                  // ElevatedButton.icon(
+                  //   style: ElevatedButton.styleFrom(
+                  //     backgroundColor: const Color(0xFF4FC3F7),
+                  //     foregroundColor: const Color(0xFF0F1C2E),
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(20),
+                  //     ),
+                  //     padding: const EdgeInsets.symmetric(
+                  //       vertical: 16,
+                  //       horizontal: 28,
+                  //     ),
+                  //     elevation: 8,
+                  //   ),
+                  //   onPressed: () {
+                  //     Navigator.of(context).push(
+                  //       MaterialPageRoute(builder: (c) => const TambahJadwal()),
+                  //     );
+                  //   },
+                  //   icon: const Icon(Icons.add, size: 26),
+                  //   label: const Text(
+                  //     'Tambah Jadwal',
+                  //     style: TextStyle(
+                  //       fontSize: 18,
+                  //       fontWeight: FontWeight.w600,
+                  //       letterSpacing: 1.1,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
