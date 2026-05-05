@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_pbm_tm/jadwal.dart';
+import 'package:tugas_pbm_tm/userpage.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -76,12 +77,12 @@ class HomeScreen extends StatelessWidget {
                     ),
                     onPressed: () {
                       Navigator.of(context).push(
-                        MaterialPageRoute(builder: (c) => const Jadwal()),
+                        MaterialPageRoute(builder: (c) => const UsersPage()),
                       );
                     },
                     icon: const Icon(Icons.calendar_month, size: 26),
                     label: const Text(
-                      'Lihat Jadwal',
+                      'Lihat Users',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,

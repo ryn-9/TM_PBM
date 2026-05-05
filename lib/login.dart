@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             Navigator.of(context).push(
-                              MaterialPageRoute(builder: (c) => const TambahUser()),
+                              MaterialPageRoute(builder: (c) => const HomeScreen()),
                             );
                           }
                         },
