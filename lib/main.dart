@@ -3,6 +3,7 @@ import 'package:tugas_pbm_tm/home.dart';
 import 'package:tugas_pbm_tm/jadwal.dart';
 import 'package:tugas_pbm_tm/login.dart';
 import 'package:tugas_pbm_tm/tambahjadwal.dart';
+import 'package:tugas_pbm_tm/tambahuser.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +19,8 @@ class MyApp extends StatelessWidget {
       home: LoginScreen(),
       routes: {'/jadwal': (context) => Jadwal(),
       '/login' : (context) => HomeScreen(),
-      '/tambah_jadwal' : (context) => TambahJadwal()},
+      '/tambah_jadwal' : (context) => TambahJadwal(),
+      '/tambahUser' : (context) => TambahUser()},
     );
   }
 }

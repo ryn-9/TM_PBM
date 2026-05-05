@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tugas_pbm_tm/home.dart';
+import 'package:tugas_pbm_tm/tambahuser.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -141,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
                             Navigator.of(context).push(
-                              MaterialPageRoute(builder: (c) => const HomeScreen()),
+                              MaterialPageRoute(builder: (c) => const TambahUser()),
                             );
                           }
                         },
