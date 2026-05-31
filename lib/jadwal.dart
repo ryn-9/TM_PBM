@@ -1,65 +1,28 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tugas_pbm_tm/tambahjadwal.dart';
-import 'services/api_service.dart';
 
-class Kereta {
-  final String nama_kereta;
-  final String keberangkatan;
-  final String tujuan;
-
-  Kereta({
-    required this.nama_kereta,
-    required this.keberangkatan,
-    required this.tujuan,
-  });
-
-  factory Kereta.fromJson(Map<String, dynamic> json) {
-    return Kereta(
-      nama_kereta: json['nama_kereta'],
-      keberangkatan: json['keberangkatan'],
-      tujuan: json['tujuan'],
-    );
-  }
-}
-
-class Jadwal extends StatefulWidget {
+class Jadwal extends StatelessWidget {
   const Jadwal({super.key});
 
-  @override
-  State<Jadwal> createState() => _JadwalState();
-}
+  Future<void> _hapusJadwal(BuildContext context, String docId) async {
+    try {
+      await FirebaseFirestore.instance.collection('jadwal').doc(docId).delete();
 
-class _JadwalState extends State<Jadwal> {
-  List<Kereta> jadwalKereta = [];
-  final api = ApiService();
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _loadJadwal(); // GET data saat halaman dibuka
-//   }
-
-  // Future<void> _loadJadwal() async {
-  //   try {
-  //     final data = await api.getJadwal();
-  //     setState(() {
-  //       jadwalKereta = data;
-  //     });
-  //   } catch (e) {
-  //     print("Error GET jadwal: $e");
-  //   }
-  // }
-
-  // void _tambahJadwal(Kereta keretaBaru) async {
-  //   try {
-  //     await api.tambahJadwal(keretaBaru); // POST ke API
-  //     setState(() {
-  //       jadwalKereta.add(keretaBaru);
-  //     });
-  //   } catch (e) {
-  //     print("Error POST jadwal: $e");
-  //   }
-  // }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Jadwal berhasil dihapus'),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal menghapus jadwal: $e'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,47 +43,138 @@ class _JadwalState extends State<Jadwal> {
         actions: [
           IconButton(
             icon: const Icon(Icons.add, color: Colors.white),
-            onPressed: () async {
-              final hasil = await Navigator.push<Kereta>(
+            onPressed: () {
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const TambahJadwal()),
               );
-              // if (hasil != null) {
-              //   _tambahJadwal(hasil);
-              // }
             },
-          )
+          ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: jadwalKereta.length,
-        itemBuilder: (context, index) {
-          final kereta = jadwalKereta[index];
-          return Padding(
+
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('jadwal')
+            .orderBy('createdAt', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                'Terjadi error: ${snapshot.error}',
+                style: const TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Color(0xFF4FC3F7),
+              ),
+            );
+          }
+
+          final docs = snapshot.data?.docs ?? [];
+
+          if (docs.isEmpty) {
+            return const Center(
+              child: Text(
+                'Belum ada jadwal kereta.',
+                style: TextStyle(
+                  color: Color(0xFF8A9BB0),
+                  fontSize: 16,
+                ),
+              ),
+            );
+          }
+
+          return ListView.builder(
             padding: const EdgeInsets.all(12),
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: const Color(0xFF152335),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.white),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    kereta.nama_kereta,
-                    style: const TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
+            itemCount: docs.length,
+            itemBuilder: (context, index) {
+              final doc = docs[index];
+              final data = doc.data() as Map<String, dynamic>;
+
+              final namaKereta = data['nama_kereta'] ?? '-';
+              final keberangkatan = data['keberangkatan'] ?? '-';
+              final tujuan = data['tujuan'] ?? '-';
+              final dibuatOlehNama = data['dibuatOlehNama'] ?? '';
+              final dibuatOlehEmail = data['dibuatOlehEmail'] ?? '';
+
+              return Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF152335),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: const Color(0xFF1E3A5F),
+                    width: 1.5,
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${kereta.keberangkatan} - ${kereta.tujuan}',
-                    style: const TextStyle(color: Color(0xFF8A9BB0)),
-                  ),
-                ],
-              ),
-            ),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.train,
+                      color: Color(0xFF4FC3F7),
+                      size: 32,
+                    ),
+
+                    const SizedBox(width: 12),
+
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            namaKereta,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+
+                          const SizedBox(height: 6),
+
+                          Text(
+                            '$keberangkatan - $tujuan',
+                            style: const TextStyle(
+                              color: Color(0xFF8A9BB0),
+                              fontSize: 14,
+                            ),
+                          ),
+
+                          if (dibuatOlehNama.toString().isNotEmpty ||
+                              dibuatOlehEmail.toString().isNotEmpty) ...[
+                            const SizedBox(height: 8),
+                            Text(
+                              'Ditambahkan oleh: ${dibuatOlehNama.toString().isNotEmpty ? dibuatOlehNama : dibuatOlehEmail}',
+                              style: const TextStyle(
+                                color: Color(0xFF8A9BB0),
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+
+                    IconButton(
+                      onPressed: () => _hapusJadwal(context, doc.id),
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.redAccent,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           );
         },
       ),

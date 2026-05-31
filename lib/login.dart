@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tugas_pbm_tm/home.dart';
-import 'package:tugas_pbm_tm/tambahuser.dart';
+import 'package:tugas_pbm_tm/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,10 +9,36 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  var isPasswordVisible = false;
+  final AuthService _authService = AuthService();
+  bool isLoading = false;
+
+  Future<void> _loginWithGoogle() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await _authService.signInWithGoogle();
+
+      // Tidak perlu Navigator manual karena AuthGate di main.dart
+      // otomatis memindahkan user ke HomeScreen setelah login berhasil.
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Login Google gagal: $e'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,124 +64,91 @@ class _LoginScreenState extends State<LoginScreen> {
             color: const Color(0xFF152335),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(24),
-              side: const BorderSide(color: Color(0xFF1E3A5F), width: 1.5),
+              side: const BorderSide(
+                color: Color(0xFF1E3A5F),
+                width: 1.5,
+              ),
             ),
             margin: const EdgeInsets.symmetric(horizontal: 24),
             child: Padding(
               padding: const EdgeInsets.all(28.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'Selamat Datang di Keretaku',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 30),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.train,
+                    size: 72,
+                    color: Color(0xFF4FC3F7),
+                  ),
+                  const SizedBox(height: 20),
 
-                    TextFormField(
-                      controller: _usernameController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.person, color: Color(0xFF4FC3F7)),
-                        labelText: 'Username',
-                        labelStyle: const TextStyle(color: Color(0xFF8A9BB0)),
-                        isDense: true,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFF1E3A5F), width: 1.5),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFF4FC3F7), width: 1.5),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Username tidak boleh kosong';
-                        }
-                        return null;
-                      },
+                  const Text(
+                    'Selamat Datang di Keretaku',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                    const SizedBox(height: 16),
+                    textAlign: TextAlign.center,
+                  ),
 
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: !isPasswordVisible,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.lock, color: Color(0xFF4FC3F7)),
-                        labelText: 'Password',
-                        labelStyle: const TextStyle(color: Color(0xFF8A9BB0)),
-                        isDense: true,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFF1E3A5F), width: 1.5),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFF4FC3F7), width: 1.5),
-                        ),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isPasswordVisible = !isPasswordVisible;
-                            });
-                          },
-                          icon: Icon(
-                            isPasswordVisible ? Icons.visibility_off : Icons.visibility,
-                            color: const Color(0xFF8A9BB0),
-                          ),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Password tidak boleh kosong';
-                        }
-                        if (value.length < 8) {
-                          return 'Password minimal 8 karakter';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 24),
+                  const SizedBox(height: 8),
 
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF4FC3F7),
-                          foregroundColor: const Color(0xFF0F1C2E),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
+                  const Text(
+                    'Silakan login menggunakan akun Google untuk masuk ke aplikasi.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF8A9BB0),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF4FC3F7),
+                        foregroundColor: const Color(0xFF0F1C2E),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (c) => const HomeScreen()),
-                            );
-                          }
-                        },
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      onPressed: isLoading ? null : _loginWithGoogle,
+                      icon: isLoading
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Color(0xFF0F1C2E),
+                              ),
+                            )
+                          : const Icon(Icons.login),
+                      label: Text(
+                        isLoading ? 'Memproses...' : 'Login dengan Google',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  const Text(
+                    'Data akun akan tersimpan di Firebase Authentication.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF8A9BB0),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
           ),

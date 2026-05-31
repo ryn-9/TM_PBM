@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "406490947205",
+    "project_id": "tm-pbm-firebase",
+    "storage_bucket": "tm-pbm-firebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406490947205:android:aea64ed77ae4f7d78dd3ec",
+        "android_client_info": {
+          "package_name": "com.ryn9.keretaku"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "406490947205-86l9estsss737jtjq0t0cu5f6i7ggn0t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ryn9.keretaku",
+            "certificate_hash": "b32c42e22ae5c4cba8968255bdd752de4a12563f"
+          }
+        },
+        {
+          "client_id": "406490947205-0rcjv1a5r3do7qgdh78kgb02kcjk30i4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIQ8tMAKr9Ktpw10lw95Yi9fnE4P2vtcw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "406490947205-0rcjv1a5r3do7qgdh78kgb02kcjk30i4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "406490947205-9e47fri25rudgc1t1rdlib0kvclpdg4f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tugasPbmTm"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:406490947205:android:ce9d21b219f21fda8dd3ec",
+        "android_client_info": {
+          "package_name": "unej.ilkom.pbma3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "406490947205-fbb04lds6uha1hcdcdiuhkr4liqjhplc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "unej.ilkom.pbma3",
+            "certificate_hash": "b32c42e22ae5c4cba8968255bdd752de4a12563f"
+          }
+        },
+        {
+          "client_id": "406490947205-0rcjv1a5r3do7qgdh78kgb02kcjk30i4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIQ8tMAKr9Ktpw10lw95Yi9fnE4P2vtcw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "406490947205-0rcjv1a5r3do7qgdh78kgb02kcjk30i4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "406490947205-9e47fri25rudgc1t1rdlib0kvclpdg4f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tugasPbmTm"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

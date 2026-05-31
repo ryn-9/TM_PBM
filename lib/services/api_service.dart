@@ -10,7 +10,6 @@ class ApiService {
     ),
   );
 
-  // 🔹 GET semua users
   Future<List<User>> getUsers() async {
     try {
       final response = await dio.get("/users");
@@ -29,7 +28,6 @@ class ApiService {
     }
   }
 
-  // 🔹 POST tambah user
   Future<void> tambahUser(User user) async {
     try {
       final response = await dio.post(
@@ -50,7 +48,6 @@ class ApiService {
     }
   }
 
-  // 🔥 HANDLE ERROR (BIAR PROPER)
   String _handleError(DioException e) {
     switch (e.type) {
       case DioExceptionType.connectionTimeout:
