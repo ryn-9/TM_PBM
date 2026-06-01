@@ -58,6 +58,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "406490947205-8i6i1qgunn5lfcnccqarivhbnlfnivii.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "unej.ilkom.pbma3",
+            "certificate_hash": "9c8824e573f956abc33a78fb4eb669c4443e2292"
+          }
+        },
+        {
           "client_id": "406490947205-fbb04lds6uha1hcdcdiuhkr4liqjhplc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

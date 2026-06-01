@@ -10,7 +10,7 @@ class AuthService {
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
     if (googleUser == null) {
-      throw Exception('Login Google dibatalkan');
+      throw Exception('Proses Google dibatalkan');
     }
 
     final GoogleSignInAuthentication googleAuth =
@@ -22,19 +22,31 @@ class AuthService {
     );
 
     final userCredential = await _auth.signInWithCredential(credential);
-
     final user = userCredential.user;
+
     if (user != null) {
-      await _firestore.collection('users').doc(user.uid).set({
-        'uid': user.uid,
-        'name': user.displayName ?? '',
-        'email': user.email ?? '',
-        'photoUrl': user.photoURL ?? '',
-        'updatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
+      await _saveUserToFirestore(user);
     }
 
     return userCredential;
+  }
+
+  Future<UserCredential> registerWithGoogle() async {
+    // Pada Firebase Auth, registrasi Google dan login Google memakai proses yang sama.
+    // Jika akun belum ada, Firebase otomatis membuat akun baru.
+    return await signInWithGoogle();
+  }
+
+  Future<void> _saveUserToFirestore(User user) async {
+    await _firestore.collection('users').doc(user.uid).set({
+      'uid': user.uid,
+      'name': user.displayName ?? '',
+      'email': user.email ?? '',
+      'photoUrl': user.photoURL ?? '',
+      'provider': 'google',
+      'updatedAt': FieldValue.serverTimestamp(),
+      'createdAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
   }
 
   Future<void> signOut() async {

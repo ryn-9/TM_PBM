@@ -10,18 +10,27 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final AuthService _authService = AuthService();
-  bool isLoading = false;
+
+  bool isLoginLoading = false;
+  bool isRegisterLoading = false;
 
   Future<void> _loginWithGoogle() async {
     setState(() {
-      isLoading = true;
+      isLoginLoading = true;
     });
 
     try {
       await _authService.signInWithGoogle();
 
-      // Tidak perlu Navigator manual karena AuthGate di main.dart
-      // otomatis memindahkan user ke HomeScreen setelah login berhasil.
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Login Google berhasil'),
+        ),
+      );
+
+      // Tidak perlu Navigator manual kalau sudah pakai AuthGate di main.dart.
     } catch (e) {
       if (!mounted) return;
 
@@ -34,7 +43,42 @@ class _LoginScreenState extends State<LoginScreen> {
     } finally {
       if (mounted) {
         setState(() {
-          isLoading = false;
+          isLoginLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _registerWithGoogle() async {
+    setState(() {
+      isRegisterLoading = true;
+    });
+
+    try {
+      await _authService.registerWithGoogle();
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Registrasi Google berhasil'),
+        ),
+      );
+
+      // AuthGate otomatis mengarahkan user ke halaman utama setelah auth berhasil.
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Registrasi Google gagal: $e'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isRegisterLoading = false;
         });
       }
     }
@@ -42,6 +86,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isLoading = isLoginLoading || isRegisterLoading;
+
     return Scaffold(
       backgroundColor: const Color(0xFF0F1C2E),
       appBar: AppBar(
@@ -80,6 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     size: 72,
                     color: Color(0xFF4FC3F7),
                   ),
+
                   const SizedBox(height: 20),
 
                   const Text(
@@ -95,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 8),
 
                   const Text(
-                    'Silakan login menggunakan akun Google untuk masuk ke aplikasi.',
+                    'Silakan login atau daftar menggunakan akun Google.',
                     style: TextStyle(
                       fontSize: 14,
                       color: Color(0xFF8A9BB0),
@@ -118,7 +165,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                       onPressed: isLoading ? null : _loginWithGoogle,
-                      icon: isLoading
+                      icon: isLoginLoading
                           ? const SizedBox(
                               width: 18,
                               height: 18,
@@ -129,7 +176,46 @@ class _LoginScreenState extends State<LoginScreen> {
                             )
                           : const Icon(Icons.login),
                       label: Text(
-                        isLoading ? 'Memproses...' : 'Login dengan Google',
+                        isLoginLoading ? 'Memproses...' : 'Login dengan Google',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFF4FC3F7),
+                        side: const BorderSide(
+                          color: Color(0xFF4FC3F7),
+                          width: 1.5,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      onPressed: isLoading ? null : _registerWithGoogle,
+                      icon: isRegisterLoading
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Color(0xFF4FC3F7),
+                              ),
+                            )
+                          : const Icon(Icons.person_add),
+                      label: Text(
+                        isRegisterLoading
+                            ? 'Mendaftarkan...'
+                            : 'Daftar dengan Google',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -141,7 +227,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 16),
 
                   const Text(
-                    'Data akun akan tersimpan di Firebase Authentication.',
+                    'Akun baru akan otomatis tersimpan di Firebase Authentication dan Firestore.',
                     style: TextStyle(
                       fontSize: 12,
                       color: Color(0xFF8A9BB0),
