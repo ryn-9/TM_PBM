@@ -1,10 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tugas_pbm_tm/services/auth_service.dart';
+import 'package:tugas_pbm_tm/services/fcm_api_service.dart';
 import 'package:tugas_pbm_tm/userpage.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    FcmApiService.saveToken();
+  }
 
   Future<void> _logout() async {
     await AuthService().signOut();
