@@ -25,17 +25,22 @@ class NotificationReceiverService {
       settings: initSettings,
     );
 
+    final androidPlugin = _localNotifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+
+    await androidPlugin?.requestNotificationsPermission();
+
     const AndroidNotificationChannel channel = AndroidNotificationChannel(
       'high_importance_channel',
       'High Importance Notifications',
       description: 'Channel untuk notifikasi penting',
       importance: Importance.high,
+      playSound: true,
+      enableVibration: true,
     );
 
-    await _localNotifications
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
+    await androidPlugin?.createNotificationChannel(channel);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       final notification = message.notification;
@@ -64,6 +69,9 @@ class NotificationReceiverService {
           channelDescription: 'Channel untuk notifikasi penting',
           importance: Importance.high,
           priority: Priority.high,
+          playSound: true,
+          enableVibration: true,
+          fullScreenIntent: false,
         ),
       ),
     );
